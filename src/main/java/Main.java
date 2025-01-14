@@ -1,4 +1,5 @@
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -30,8 +31,8 @@ public class Main {
                     // Check in PATH for the command
                     String pathEnv = System.getenv("PATH");
                     if (pathEnv != null) {
-                        String[] pathDirs = pathEnv.split(":");
-                        String commandPath = findCommandInPath(typeSubstring, pathDirs);
+                        // String[] pathDirs = pathEnv.split(":");
+                        String commandPath = getPath(typeSubstring);
 
                         if (commandPath != null) {
                             System.out.println(typeSubstring + " is " + commandPath);
@@ -55,13 +56,18 @@ public class Main {
             }
         }
     }
-    private static String findCommandInPath(String command, String[] pathDirs) {
-        for (String dir : pathDirs) {
-            File file = new File(dir, command);
-            if (file.exists() && file.canExecute()) {
-                return file.getAbsolutePath();
+    private static String getPath(String command) {
+        String pathEnv = System.getenv("PATH");
+        if (pathEnv == null || pathEnv.isEmpty()) {
+            return null;
+        }
+
+        for (String path : pathEnv.split(":")) {
+            Path fullPath = Path.of(path, command);
+            if (Files.isRegularFile(fullPath) && Files.isExecutable(fullPath)) {
+                return fullPath.toString();
             }
         }
-        return null; // Command not found
+        return null;
     }
 }
