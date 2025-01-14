@@ -11,7 +11,7 @@ public class Main {
             System.out.print("$ ");
 
             Scanner scanner = new Scanner(System.in);
-            String input = scanner.nextLine();
+            input = scanner.nextLine();
 
             if (input.startsWith("exit")) {
                 int exitCode = Integer.parseInt(input.substring(5));
