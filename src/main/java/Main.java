@@ -43,7 +43,15 @@ public class Main {
                     }
                 }
             } else {
-                System.out.println(input + ": command not found");
+                String command = input.split(" ")[0];
+                String path = getPath(command);
+                if (path == null) {
+                System.out.printf("%s: command not found%n", command);
+                } else {
+                String fullPath = path + input.substring(command.length());
+                Process p = Runtime.getRuntime().exec(fullPath.split(" "));
+                p.getInputStream().transferTo(System.out);
+                }
             }
         }
     }
