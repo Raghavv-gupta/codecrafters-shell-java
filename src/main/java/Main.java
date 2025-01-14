@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -20,17 +21,39 @@ public class Main {
             } else if (input.startsWith("echo")) {
                 String output = input.substring(5);
                 System.out.println(output);
-            }else if (input.startsWith("type")){
-                typeSubstring = input.substring(5);
-                if(Arrays.asList(commands).contains(typeSubstring)){
+            }else if (input.startsWith("type")) {
+                typeSubstring = input.substring(5).trim();
+
+                if (Arrays.asList(commands).contains(typeSubstring)) {
                     System.out.println(typeSubstring + " is a shell builtin");
-                }else {
-                    System.out.println(typeSubstring + " not found");
+                } else {
+                    // Check in PATH for the command
+                    String pathEnv = System.getenv("PATH");
+                    if (pathEnv != null) {
+                        String[] pathDirs = pathEnv.split(":");
+                        String commandPath = findCommandInPath(typeSubstring, pathDirs);
+
+                        if (commandPath != null) {
+                            System.out.println(typeSubstring + " is " + commandPath);
+                        } else {
+                            System.out.println(typeSubstring + ": not found");
+                        }
+                    } else {
+                        System.out.println(typeSubstring + ": not found");
+                    }
                 }
             } else {
-
                 System.out.println(input + ": command not found");
             }
         }
+    }
+    private static String findCommandInPath(String command, String[] pathDirs) {
+        for (String dir : pathDirs) {
+            File file = new File(dir, command);
+            if (file.exists() && file.canExecute()) {
+                return file.getAbsolutePath();
+            }
+        }
+        return null; // Command not found
     }
 }
