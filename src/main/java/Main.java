@@ -47,26 +47,21 @@ public class Main {
                 String command = input.split(" ")[0];
                 String path = getPath(command);
                 if (path == null) {
-                System.out.printf("%s: command not found%n", command);
+                  System.out.printf("%s: command not found%n", command);
                 } else {
-                String fullPath = path + input.substring(command.length());
-                Process p = Runtime.getRuntime().exec(fullPath.split(" "));
-                p.getInputStream().transferTo(System.out);
+                  String fullPath = path + input.substring(command.length());
+                  Process p = Runtime.getRuntime().exec(fullPath.split(" "));
+                  p.getInputStream().transferTo(System.out);
                 }
             }
         }
     }
     private static String getPath(String command) {
-        String pathEnv = System.getenv("PATH");
-        if (pathEnv == null || pathEnv.isEmpty()) {
-            return null;
-        }
-
-        for (String path : pathEnv.split(":")) {
-            Path fullPath = Path.of(path, command);
-            if (Files.isRegularFile(fullPath) && Files.isExecutable(fullPath)) {
-                return fullPath.toString();
-            }
+        for (String path : System.getenv("PATH").split(":")) {
+          Path fullPath = Path.of(path, command);
+          if (Files.isRegularFile(fullPath)) {
+            return fullPath.toString();
+          }
         }
         return null;
     }
