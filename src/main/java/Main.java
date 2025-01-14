@@ -10,7 +10,14 @@ public class Main {
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
     
-            System.out.println(input + ": command not found");
+            if(input.startsWith("exit")){
+                int exitCode = Integer.parseInt(input.substring(5));
+
+                System.exit(exitCode);
+            }else{
+
+                System.out.println(input + ": command not found");
+            }
         }
     }
 }
